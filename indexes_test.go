@@ -95,9 +95,7 @@ func TestNewRepository_AutoIndexes(t *testing.T) {
 
 		ctx := context.Background()
 
-		repo, err := NewRepository[*TestUserWithIndexes](ctx, db)
-		require.NoError(t, err)
-		require.NotNil(t, repo)
+		repo := NewRepository[*TestUserWithIndexes](ctx, db)
 
 		indexes, err := repo.GetIndexes(ctx)
 		require.NoError(t, err)

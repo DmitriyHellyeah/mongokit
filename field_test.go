@@ -62,12 +62,6 @@ func TestBaseField_BeforeUpdate(t *testing.T) {
 		"UpdatedAt should be within the test time window")
 }
 
-func TestBaseField_CollectionName(t *testing.T) {
-	b := &BaseField{}
-	assert.Equal(t, "", b.CollectionName(),
-		"BaseField.CollectionName must return empty string")
-}
-
 func TestBaseField_Validate(t *testing.T) {
 	b := &BaseField{}
 	assert.NoError(t, b.Validate(), "BaseField.Validate must return nil")

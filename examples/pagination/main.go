@@ -36,10 +36,7 @@ func main() {
 
 	database := client.Database("example")
 
-	users, err := mongokit.NewRepository[*User](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	users := mongokit.NewRepository[*User](ctx, database)
 
 	// Seed some data
 	for i := 0; i < 50; i++ {

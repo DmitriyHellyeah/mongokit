@@ -77,23 +77,14 @@ func main() {
 	database := client.Database("example")
 
 	// User and Session have Indexes() - indexes created automatically
-	users, err := mongokit.NewRepository[*User](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	users := mongokit.NewRepository[*User](ctx, database)
 	fmt.Println("User indexes created automatically")
 
-	_, err = mongokit.NewRepository[*Session](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	_ = mongokit.NewRepository[*Session](ctx, database)
 	fmt.Println("Session indexes created automatically (helpers + TTL)")
 
 	// Product has no Indexes() - add explicitly if needed
-	products, err := mongokit.NewRepository[*Product](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	products := mongokit.NewRepository[*Product](ctx, database)
 	productIndexes := []mongo.IndexModel{
 		{
 			Keys:    bson.D{{Key: "sku", Value: 1}},

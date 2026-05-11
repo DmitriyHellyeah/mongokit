@@ -30,10 +30,7 @@ func main() {
 
 	database := client.Database("example")
 
-	accounts, err := mongokit.NewRepository[*Account](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	accounts := mongokit.NewRepository[*Account](ctx, database)
 
 	// Create two accounts
 	alice, err := accounts.InsertOne(ctx, &Account{Owner: "Alice", Balance: 1000})

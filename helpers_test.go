@@ -49,8 +49,7 @@ func setupTestRepo(t *testing.T) (*Repository[*TestUser], *mongo.Database, func(
 	db, cleanup := setupTestDB(t)
 	ctx := context.Background()
 
-	repo, err := NewRepository[*TestUser](ctx, db)
-	require.NoError(t, err)
+	repo := NewRepository[*TestUser](ctx, db)
 
 	return repo, db, func() {
 		repo.Collection().Drop(context.Background())

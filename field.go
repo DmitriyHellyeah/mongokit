@@ -14,11 +14,6 @@ type BaseField struct {
 	UpdatedAt time.Time     `bson:"updatedAt,omitempty" json:"updatedAt"`
 }
 
-// CollectionName returns an empty string. Models must override this method.
-func (b *BaseField) CollectionName() string {
-	return ""
-}
-
 // SetID sets the document's ID
 func (b *BaseField) SetID(id bson.ObjectID) {
 	b.ID = id

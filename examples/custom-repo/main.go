@@ -37,12 +37,8 @@ type UserRepo struct {
 	*mongokit.Repository[*User]
 }
 
-func NewUserRepo(ctx context.Context, db *mongo.Database) (*UserRepo, error) {
-	repo, err := mongokit.NewRepository[*User](ctx, db)
-	if err != nil {
-		return nil, err
-	}
-	return &UserRepo{repo}, nil
+func NewUserRepo(ctx context.Context, db *mongo.Database) *UserRepo {
+	return &UserRepo{mongokit.NewRepository[*User](ctx, db)}
 }
 
 func (r *UserRepo) FindActiveByEmail(ctx context.Context, email string) (*User, error) {
@@ -65,18 +61,11 @@ type DB struct {
 	Tasks *mongokit.Repository[*Task]
 }
 
-func Initialize(ctx context.Context, db *mongo.Database) (*DB, error) {
-	users, err := NewUserRepo(ctx, db)
-	if err != nil {
-		return nil, err
+func Initialize(ctx context.Context, db *mongo.Database) *DB {
+	return &DB{
+		Users: NewUserRepo(ctx, db),
+		Tasks: mongokit.NewRepository[*Task](ctx, db),
 	}
-
-	tasks, err := mongokit.NewRepository[*Task](ctx, db)
-	if err != nil {
-		return nil, err
-	}
-
-	return &DB{Users: users, Tasks: tasks}, nil
 }
 
 // --- Main ---
@@ -90,10 +79,7 @@ func main() {
 	}
 	defer client.Disconnect(ctx)
 
-	db, err := Initialize(ctx, client.Database("example"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := Initialize(ctx, client.Database("example"))
 
 	// Custom method
 	user, err := db.Users.FindActiveByEmail(ctx, "john@example.com")

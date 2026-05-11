@@ -45,10 +45,14 @@ type IRepository[T Document] interface {
 
 // Document represents an interface for common document operations.
 type Document interface {
-	CollectionName() string
 	SetID(id bson.ObjectID)
 	BeforeInsert()
 	BeforeUpdate()
+}
+
+// ICollectionName is implemented by models to declare their collection name.
+type ICollectionName interface {
+	CollectionName() string
 }
 
 // Repository implements IRepository interface for MongoDB
@@ -57,15 +61,27 @@ type Repository[T Document] struct {
 }
 
 // NewRepository creates a new MongoDB repository.
-// Collection name is taken from T.CollectionName().
+// Collection name is taken from T.CollectionName() via the ICollectionName interface.
 // If T implements IIndex, indexes are ensured automatically.
 // T methods must use pointer receivers to avoid nil pointer panics.
-func NewRepository[T Document](ctx context.Context, database *mongo.Database) (*Repository[T], error) {
+//
+// Panics if:
+//   - T does not implement ICollectionName
+//   - CollectionName() returns an empty string
+//   - index creation fails
+func NewRepository[T Document](ctx context.Context, database *mongo.Database) *Repository[T] {
 	var zero T
-	name := zero.CollectionName()
-	if name == "" {
-		return nil, ErrEmptyCollectionName
+
+	namer, ok := any(zero).(ICollectionName)
+	if !ok {
+		panic("mongokit: model must implement CollectionName() string")
 	}
+
+	name := namer.CollectionName()
+	if name == "" {
+		panic("mongokit: CollectionName() must return a non-empty string")
+	}
+
 	repo := &Repository[T]{
 		collection: database.Collection(name),
 	}
@@ -74,12 +90,12 @@ func NewRepository[T Document](ctx context.Context, database *mongo.Database) (*
 		indexes := indexer.Indexes()
 		if len(indexes) > 0 {
 			if err := repo.EnsureIndexes(ctx, indexes); err != nil {
-				return nil, err
+				panic("mongokit: failed to ensure indexes for " + name + ": " + err.Error())
 			}
 		}
 	}
 
-	return repo, nil
+	return repo
 }
 
 // compile-time check that Repository implements IRepository

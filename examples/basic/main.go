@@ -36,10 +36,7 @@ func main() {
 
 	database := client.Database("example")
 
-	users, err := mongokit.NewRepository[*User](ctx, database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	users := mongokit.NewRepository[*User](ctx, database)
 	db := DB{Users: users}
 
 	// InsertOne - ID, CreatedAt, UpdatedAt are set automatically by BaseField.BeforeInsert().
