@@ -101,7 +101,7 @@ func TestFindRaw(t *testing.T) {
 	ctx := context.Background()
 	seedUsers(t, repo, 3)
 
-	cursor, err := repo.FindRaw(ctx, bson.M{})
+	cursor, err := repo.Find(ctx, bson.M{})
 	require.NoError(t, err)
 	defer cursor.Close(ctx)
 

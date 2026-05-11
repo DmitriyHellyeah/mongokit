@@ -60,9 +60,9 @@ func (r *Repository[T]) FindOne(ctx context.Context, filter any, opts ...options
 	return result, r.collection.FindOne(ctx, filter, opts...).Decode(&result)
 }
 
-// FindRaw returns a raw cursor over documents matching the filter.
+// Find returns a raw cursor over documents matching the filter.
 // The caller is responsible for closing the cursor.
-func (r *Repository[T]) FindRaw(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) (*mongo.Cursor, error) {
+func (r *Repository[T]) Find(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) (*mongo.Cursor, error) {
 	if filter == nil {
 		filter = bson.M{}
 	}
@@ -71,7 +71,7 @@ func (r *Repository[T]) FindRaw(ctx context.Context, filter any, opts ...options
 
 // FindDecoded returns all documents matching the filter, decoded into []T.
 func (r *Repository[T]) FindDecoded(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) ([]T, error) {
-	cursor, err := r.FindRaw(ctx, filter, opts...)
+	cursor, err := r.Find(ctx, filter, opts...)
 	if err != nil {
 		return nil, err
 	}

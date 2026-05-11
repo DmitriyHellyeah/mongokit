@@ -13,7 +13,7 @@ type IRepository[T Document] interface {
 	Collection() *mongo.Collection
 	InsertOne(ctx context.Context, document T, opts ...options.Lister[options.InsertOneOptions]) (T, error)
 	InsertMany(ctx context.Context, documents []T, opts ...options.Lister[options.InsertManyOptions]) ([]any, error)
-	FindRaw(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) (*mongo.Cursor, error)
+	Find(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) (*mongo.Cursor, error)
 	FindOneRaw(ctx context.Context, filter any, opts ...options.Lister[options.FindOneOptions]) *mongo.SingleResult
 	FindDecoded(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) ([]T, error)
 	FindDecodedWithTotal(ctx context.Context, filter any, opts ...options.Lister[options.FindOptions]) ([]T, int64, error)

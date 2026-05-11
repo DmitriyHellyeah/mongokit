@@ -76,8 +76,8 @@ func main() {
 	}
 	fmt.Printf("Found by email: %s\n", found.Name)
 
-	// FindRaw (raw cursor) - caller controls decoding
-	cursor, err := db.Users.FindRaw(ctx, bson.M{})
+	// Find (raw cursor) - caller controls decoding
+	cursor, err := db.Users.Find(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
